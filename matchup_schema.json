@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "user_id": 132,
+      "roster_id": 1,
+      "starters": [
+        {
+          "player_id": 312,
+          "player_name": "Aaron Rodgers",
+          "pts_std": 23,
+          "pts_half": 12,
+          "pts_full": 32 
+        }
+      ]
+    }
+  ],
+  "league": {
+    "league_id": 1232,
+    "roster_positions": ["QB", "WR"],
+    "name": "ATL LEAGUE",
+    "total_rosters": 12,
+    "status": "in-season",
+    "season_type": "regular",
+    "season": "2019"
+  } 
+}
