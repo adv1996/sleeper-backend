@@ -33,4 +33,5 @@ def saveJson(filename, data):
   with open(filename, 'w') as outfile:
     json.dump(data, outfile)
 
-fetchAllPlayers(2)
+fetchAllPlayers(3)
+fetchMatchupsStats(3)

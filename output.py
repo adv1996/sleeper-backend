@@ -11,7 +11,7 @@ def portLeagueSettings(output):
   json_file.close()
   output["settings"] = league_settings
 
-def portPlayerSettings(output):
+def portPlayerSettings(output, statsFile, matchupsFile):
   matchups = {}
   playerSettings = ["roster_id", "players", "points"]
   # need to get this from the league setting and remove bench positions
@@ -27,11 +27,11 @@ def portPlayerSettings(output):
     "DEF"
   ]
   stats = {}
-  with open('2019w1.json') as stat_file:
+  with open(statsFile) as stat_file:
     stats = json.load(stat_file)
   stat_file.close()
 
-  with open('atl_2019_week1_stats.json') as json_file:
+  with open(matchupsFile) as json_file:
     data = json.load(json_file)
     for player in data:
       playerData = {}
@@ -75,8 +75,11 @@ def saveJson(filename, data):
   outfile.close()
   print('Completed Web Scraping ' + str(len(data)) + ' Items')
 
+statsFile = '2019w3.json'
+matchupsFile = 'atl_2019_week3_matchups.json'
+outputFile = 'output_week3.json'
 output = {}
 portLeagueSettings(output)
-portPlayerSettings(output)
+portPlayerSettings(output, statsFile, matchupsFile)
 portLeagueRosters(output)
-saveJson("output_week1.json", output)
+saveJson(outputFile, output)
