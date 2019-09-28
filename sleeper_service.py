@@ -6,6 +6,7 @@ import time
 
 # python3 sleeper_service.py {league_id} {year} {week}
 def service():
+  start = time.time()
   arguments = len(sys.argv) - 1
   if arguments == 3:
     print("league_id - ", sys.argv[1])
@@ -40,6 +41,9 @@ def service():
       sleeperFetches.getLeagueMatchupsStats(week, league_id)
   else:
     print("Missing Arguments")
+  end = time.time()
+  print(end - start)
+  # takes 3.5 minutes to pull all the base data for a new league.
 
 def saveStats(year, week):
   stats_directory = "stats"
