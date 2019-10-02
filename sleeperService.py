@@ -8,15 +8,17 @@ import time
 def service():
   start = time.time()
   arguments = len(sys.argv) - 1
-  if arguments == 3:
+  if arguments == 4:
     print("league_id - ", sys.argv[1])
     print("year - ", sys.argv[2])
     print("week - ", sys.argv[3])
 
     # TODO check validity of arguments passed
-    league_id = sys.argv[1]
+    league_id = sys.argv[1] # 458672130456809472
     year = sys.argv[2]
     week = sys.argv[3]
+    reset = bool(sys.argv[4])
+    print(reset, reset == True)
 
     saveStats(year, week)
     # refactor the directory naming so that it's linked in the fetchAllPlayers file
@@ -32,13 +34,13 @@ def service():
     
     # push this logic onto the saveJson function
     # figure out why requests take a long time 
-    if not os.path.exists(usersFile):
+    if not os.path.exists(usersFile) or reset:
       sleeperFetches.getLeagueUsers(league_id)
-    if not os.path.exists(rostersFile):
+    if not os.path.exists(rostersFile) or reset:
       sleeperFetches.getLeagueRosters(league_id)
-    if not os.path.exists(settingsFile):
+    if not os.path.exists(settingsFile) or reset:
       sleeperFetches.getLeagueSettings(league_id)
-    if not os.path.exists(matchupsFile):
+    if not os.path.exists(matchupsFile) or reset:
       sleeperFetches.getLeagueMatchupsStats(week, league_id)
   else:
     print("Missing Arguments")
@@ -57,7 +59,7 @@ def saveStats(year, week):
 def generateOutput():
   start = time.time()
   arguments = len(sys.argv) - 1
-  if arguments == 3:
+  if arguments == 4:
     # TODO check validity of arguments passed
     league_id = sys.argv[1]
     year = sys.argv[2]
@@ -76,5 +78,20 @@ def generateOutput():
   end = time.time()
   print(end - start)
 
-service()
-generateOutput()
+def generateTeamSnapshot():
+  arguments = len(sys.argv) - 1
+  if arguments == 4:
+    # TODO check validity of arguments passed
+    league_id = sys.argv[1]
+    year = sys.argv[2]
+    week = sys.argv[3]
+    output = {}
+    output = {}
+    league_users = "leagues/" + league_id + "/users.json"
+    league_rosters = "leagues/" + league_id + "/rosters.json"
+    outputFile = "leagues/" + league_id + "/snapshot_output.json"
+    sleeperMatchupFormatter.portLeagueSnapshot(league_users, league_rosters, output)
+    sleeperMatchupFormatter.saveJson(outputFile, output)
+# service()
+# generateOutput()
+generateTeamSnapshot()

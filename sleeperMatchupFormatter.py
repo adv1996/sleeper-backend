@@ -69,6 +69,30 @@ def portLeagueRosters(league_user, league_roster, output):
             output["players"][str(player["roster_id"])]["avatar"] = user["avatar"]
   json_file.close()
 
+def portLeagueSnapshot(league_user, league_roster, output):
+  league_rosters = {}
+  rosterSettings = ["owner_id"]
+  snapshotSettings = ["wins", "fpts_against", "fpts"]
+  users = {}
+  with open(league_user) as users_file:
+    users = json.load(users_file)
+  users_file.close()
+  players = []
+  with open(league_roster) as roster_file:
+    data = json.load(roster_file)
+    for player in data:
+      playerData = {}
+      for setting in rosterSettings:
+        playerData[setting] = player[setting]
+        for user in users:
+          if user["user_id"] == player[setting]:
+            playerData["avatar"] = user["avatar"]
+      for setting in snapshotSettings:
+        playerData[setting] = player["settings"][setting]
+      players.append(playerData)
+  roster_file.close()
+  output["players"] = players
+
 def saveJson(filename, data):
   with open(filename, 'w') as outfile:
     json.dump(data, outfile)
