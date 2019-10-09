@@ -92,6 +92,6 @@ def generateTeamSnapshot():
     outputFile = "leagues/" + league_id + "/snapshot_output.json"
     sleeperMatchupFormatter.portLeagueSnapshot(league_users, league_rosters, output)
     sleeperMatchupFormatter.saveJson(outputFile, output)
-# service()
-# generateOutput()
+service()
+generateOutput()
 generateTeamSnapshot()
