@@ -33,6 +33,12 @@ def getLeagueRosters(league_id):
   filename = "leagues/" + league_id + "/rosters.json"
   saveJson(filename, response.json())
 
+def getDraft(league_id, draft_id):
+  sleeper_url = "https://api.sleeper.app/v1/draft/" + draft_id + "/picks"
+  response = requests.get(sleeper_url)
+  filename = "leagues/" + league_id + "/draft.json"
+  saveJson(filename, response.json())
+
 def saveJson(filename, data):
   with open(filename, 'w') as outfile:
     json.dump(data, outfile)

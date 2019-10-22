@@ -20,7 +20,7 @@ def service():
     reset = bool(sys.argv[4])
     print(reset, reset == True)
 
-    saveStats(year, week)
+    saveStats(year, week, reset)
     # refactor the directory naming so that it's linked in the fetchAllPlayers file
     league_directory = "leagues/" + league_id
     if not os.path.isdir(league_directory):
@@ -46,14 +46,13 @@ def service():
     print("Missing Arguments")
   end = time.time()
   print(end - start)
-  # takes 3.5 minutes to pull all the base data for a new league.
 
-def saveStats(year, week):
+def saveStats(year, week, go):
   stats_directory = "stats"
   if not os.path.isdir(stats_directory):
     os.mkdir(stats_directory)
   filename = "stats/" + str(year) + "w" + str(week) + ".json"
-  if not os.path.exists(filename):
+  if not os.path.exists(filename) or go:
     sleeperFetches.fetchAllPlayers(year, week)
 
 def generateOutput():
@@ -61,6 +60,7 @@ def generateOutput():
   arguments = len(sys.argv) - 1
   if arguments == 4:
     # TODO check validity of arguments passed
+    print("entering the dragon")
     league_id = sys.argv[1]
     year = sys.argv[2]
     week = sys.argv[3]
@@ -86,12 +86,45 @@ def generateTeamSnapshot():
     year = sys.argv[2]
     week = sys.argv[3]
     output = {}
-    output = {}
     league_users = "leagues/" + league_id + "/users.json"
     league_rosters = "leagues/" + league_id + "/rosters.json"
     outputFile = "leagues/" + league_id + "/snapshot_output.json"
     sleeperMatchupFormatter.portLeagueSnapshot(league_users, league_rosters, output)
     sleeperMatchupFormatter.saveJson(outputFile, output)
-service()
+
+def generateWeeklyScores():
+  arguments = len(sys.argv) - 1
+  print("activated", arguments)
+  print(sys.argv)
+  if arguments == 4:
+    # TODO check validity of arguments passed
+    print("activated")
+    league_id = sys.argv[1]
+    year = sys.argv[2]
+    week = sys.argv[3]
+    output = {}
+    # week_file = "leagues/" + league_id + "/week" + week + "_matchups.json"
+    outputFile = "leagues/" + league_id + "/weeklyScores_output.json"
+    # call sleeper matchupFormatter
+    output["games"] = []
+    for x in range(int(week), 0, -1):
+      week_file = "leagues/" + league_id + "/week" + str(x) + "_matchups.json"
+      weeks = sleeperMatchupFormatter.generateWeeklyScore(str(x), week_file)
+      print(weeks)
+      output["games"].extend(weeks)
+    sleeperMatchupFormatter.saveJson(outputFile, output)
+
+# TODO create fun c that can pull multiple weeks
+# service()
 generateOutput()
-generateTeamSnapshot()
+# generateTeamSnapshot()
+# generateWeeklyScores()
+
+# sleeperFetches.getDraft("458672130456809472", "458672131274698752")
+league_id = "458672130456809472"
+
+draft_file = "leagues/" + league_id + "/draft.json"
+league_rosters = "leagues/" + league_id + "/rosters.json"
+roster_names = "leagues/" + league_id + "/week6_output.json"
+# sleeperMatchupFormatter.generateDraft(draft_file, league_rosters, roster_names)
+sleeperMatchupFormatter.playerPyramids(6)

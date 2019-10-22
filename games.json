@@ -1,0 +1,22 @@
+{
+  "games": [
+    {
+      "week": 1,
+      "player": "advaith",
+      "outcome": "win",
+      "points": 120
+    },
+    {
+      "week": 2,
+      "player": "advaith",
+      "outcome": "win",
+      "points": 120
+    }
+  ],
+  "players": [
+    {
+      "roster_id": 2,
+      "avatar": "3213afdsaf"
+    }
+  ]
+}
