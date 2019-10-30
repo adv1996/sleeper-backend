@@ -2,6 +2,7 @@ import requests
 import json
 from pydash import py_
 import pandas
+import sys
 
 def portLeagueSettings(league_setting, output):
   league_settings = {}
@@ -11,8 +12,20 @@ def portLeagueSettings(league_setting, output):
     for setting in settings:
       league_settings[setting] = data[setting]
   json_file.close()
+  league_settings["starters"] = getStarters(league_settings["roster_positions"])
   output["settings"] = league_settings
 
+def getStarters(roster_positions):
+  filteredPositions = list(filter(lambda pos: ("BN" != pos), roster_positions))
+  positions = []
+  count = 0
+  for pos in range (0, len(filteredPositions)):
+    if filteredPositions[pos] in filteredPositions[pos + 1::]:
+      count += 1
+    else:
+      count = 0
+    positions.append(filteredPositions[pos] + "-" + str(count))
+  return positions
 def portPlayerSettings(output, statsFile, matchupsFile):
   matchups = {}
   playerSettings = ["roster_id", "players", "points"]
@@ -43,8 +56,9 @@ def portPlayerSettings(output, statsFile, matchupsFile):
       for starterIndex in range(0, len(player["starters"])):
         scores = 0
         starter = player["starters"][starterIndex]
-        if starter.isalpha():
-          print(starter)
+        if starter not in stats:
+          scores = 0
+        elif starter.isalpha():
           if "pts_std" in stats[starter]:
             scores = stats[starter]["pts_std"]
           else:
@@ -201,7 +215,6 @@ def generateDraft(filename, roster_file, rosterNames):
     groupedOutput[key] = output
 
   table = pandas.DataFrame({"names": names, "drafted": drafted, "acquired": acquired, "Percentage": percentage})
-  print(table.sort_values(by=['Percentage']))
   output = {}
   output["draft"] = groupedOutput
 
@@ -210,7 +223,7 @@ def generateDraft(filename, roster_file, rosterNames):
   # saveJson(draft_file, output)
 
 def playerPyramids(week):
-  league_id = "458672130456809472"
+  league_id = sys.argv[1]
   weekData = {}
   for x in range(1, week + 1):
     output_file = "leagues/" + league_id + "/week" + str(x) + "_output.json"
@@ -221,18 +234,15 @@ def playerPyramids(week):
     for player in data["players"].keys():
       points = data["players"][player]["points"]
       if player in weekData:
-        print(data["players"][player]["scores"]["RB-0"], player, x)
-        print(weekData[player]["scores"])
         weekData[player]["scores"].append(data["players"][player]["scores"])
       else:
-        print("hit")
         weekData[player] = {
           "scores": [data["players"][player]["scores"]],
           "avatar": data["players"][player]["avatar"],
           "display_name": data["players"][player]["display_name"],
           "owner_id": data["players"][player]["owner_id"]
         }
-  saveJson("collated_stats.json", weekData)
+  return weekData
 
 def saveJson(filename, data):
   with open(filename, 'w') as outfile:
