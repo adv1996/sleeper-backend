@@ -61,8 +61,6 @@ def generateOutput(week):
   sleeperMatchupFormatter.portPlayerSettings(output, statsFile, matchupsFile)
   sleeperMatchupFormatter.portLeagueRosters(league_users, league_rosters, output)
   sleeperMatchupFormatter.saveJson(outputFile, output)
-  end = time.time()
-  print(end - start)
 
 def generateTeamSnapshot():
   arguments = len(sys.argv) - 1
@@ -106,15 +104,17 @@ def serviceMultipleWeeks():
       service(str(w))
       generateOutput(str(w))
 
-# serviceMultipleWeeks()
+serviceMultipleWeeks()
+# generateWeeklyScores()
 
 def combineSnapshotPyramids():
   league_id = sys.argv[1]
+  week = sys.argv[3]
   output = generateTeamSnapshot()
   players = py_.key_by(output["players"], 'roster_id')
   league_settings = "leagues/" + league_id + "/settings.json"
   sleeperMatchupFormatter.portLeagueSettings(league_settings, output)
-  weekData = sleeperMatchupFormatter.playerPyramids(7)
+  weekData = sleeperMatchupFormatter.playerPyramids(int(week))
   collated = "leagues/" + league_id + "/data.json"
   for k in weekData.keys():
     weekData[k]["wins"] = players[int(k)]["wins"] # these roster ids need to be the same type
