@@ -58,7 +58,7 @@ def generateOutput(week):
   league_settings = "leagues/" + league_id + "/settings.json"
   outputFile = 'leagues/' + league_id + "/week"  + week + "_output.json"
   sleeperMatchupFormatter.portLeagueSettings(league_settings, output)
-  sleeperMatchupFormatter.portPlayerSettings(output, statsFile, matchupsFile)
+  sleeperMatchupFormatter.portPlayerSettings(output, statsFile, matchupsFile, week)
   sleeperMatchupFormatter.portLeagueRosters(league_users, league_rosters, output)
   sleeperMatchupFormatter.saveJson(outputFile, output)
 
@@ -105,7 +105,7 @@ def serviceMultipleWeeks():
       generateOutput(str(w))
 
 serviceMultipleWeeks()
-generateWeeklyScores()
+# generateWeeklyScores()
 
 def combineSnapshotPyramids():
   league_id = sys.argv[1]

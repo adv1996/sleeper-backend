@@ -20,13 +20,15 @@ def getStarters(roster_positions):
   positions = []
   count = 0
   for pos in range (0, len(filteredPositions)):
+    #TODO need to label the first position as 0 and second as 1
     if filteredPositions[pos] in filteredPositions[pos + 1::]:
       count += 1
     else:
       count = 0
     positions.append(filteredPositions[pos] + "-" + str(count))
   return positions
-def portPlayerSettings(output, statsFile, matchupsFile):
+
+def portPlayerSettings(output, statsFile, matchupsFile, week): #week and matchups are redundant params
   matchups = {}
   playerSettings = ["roster_id", "players", "points"]
   roster_positions = output["settings"]["roster_positions"]
@@ -34,7 +36,9 @@ def portPlayerSettings(output, statsFile, matchupsFile):
   filteredPositions = list(filter(lambda pos: ("BN" != pos), roster_positions))
   positions = []
   count = 0
+  # this logic is already separated out in getStarters
   for pos in range (0, len(filteredPositions)):
+    # tf going on over here with the pos + 1
     if filteredPositions[pos] in filteredPositions[pos + 1::]:
       count += 1
     else:
@@ -53,12 +57,15 @@ def portPlayerSettings(output, statsFile, matchupsFile):
       for setting in playerSettings:
         playerData[setting] = player[setting]
       playerData["scores"] = {}
+      playerData["scores"]["players"] = {}
       for starterIndex in range(0, len(player["starters"])):
         scores = 0
         starter = player["starters"][starterIndex]
         if starter not in stats:
+          # what cases is this true? bye weeks?
           scores = 0
         elif starter.isalpha():
+          # alpha is for team CAR, ATL, defense don't have .5 ppr
           if "pts_std" in stats[starter]:
             scores = stats[starter]["pts_std"]
           else:
@@ -67,9 +74,10 @@ def portPlayerSettings(output, statsFile, matchupsFile):
           scores = stats[starter]["pts_half_ppr"]
         else:
           scores = 0
-        playerData["scores"][positions[starterIndex]] = scores
+        playerData["scores"]["players"][positions[starterIndex]] = scores
+      # only saving scores but here is a great place to save points, weeks, etc 
+      playerData["scores"]["week"] = int(week)
       matchups[str(player["roster_id"])] = playerData
-      # matchups[str(player["roster_id"])]["scores"] = scores
   json_file.close()
   output["players"] = matchups
 
@@ -234,6 +242,8 @@ def playerPyramids(week):
     for player in data["players"].keys():
       points = data["players"][player]["points"]
       if player in weekData:
+        # saving the points here and the weeks are separated this is not clean code
+        data["players"][player]["scores"]["points"] = round(points, 2)
         weekData[player]["scores"].append(data["players"][player]["scores"])
       else:
         weekData[player] = {
