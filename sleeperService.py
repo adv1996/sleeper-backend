@@ -105,7 +105,7 @@ def serviceMultipleWeeks():
       generateOutput(str(w))
 
 serviceMultipleWeeks()
-# generateWeeklyScores()
+generateWeeklyScores()
 
 def combineSnapshotPyramids():
   league_id = sys.argv[1]
