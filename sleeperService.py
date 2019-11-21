@@ -104,7 +104,7 @@ def serviceMultipleWeeks():
       service(str(w))
       generateOutput(str(w))
 
-serviceMultipleWeeks()
+# serviceMultipleWeeks()
 # generateWeeklyScores()
 
 def combineSnapshotPyramids():
