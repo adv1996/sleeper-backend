@@ -104,7 +104,10 @@ def serviceMultipleWeeks():
       service(str(w))
       generateOutput(str(w))
 
-# serviceMultipleWeeks()
+# servive will fetch data
+serviceMultipleWeeks()
+
+# generate will generate weekly scores for both platforms after data is fetched
 # generateWeeklyScores()
 
 def combineSnapshotPyramids():
@@ -121,4 +124,5 @@ def combineSnapshotPyramids():
   output["players"] = weekData
   sleeperMatchupFormatter.saveJson(collated, output)
 
+# if all the data has been fetched you can run this to collate the data.json file
 combineSnapshotPyramids()
